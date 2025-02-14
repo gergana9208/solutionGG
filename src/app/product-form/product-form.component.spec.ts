@@ -91,12 +91,28 @@ describe('ProductFormComponent', () => {
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
-  xit('should emit cancel event', () => {
+  it('should emit cancel event', () => {
     // @fixme complete this test
+    const cancelSpy = jest.spyOn(component.cancel, 'emit');
+    component.onCancel();
+    expect(cancelSpy).toHaveBeenCalled();
   });
 
-  xit('should reset form on cancel', () => {
+  it('should reset form on cancel', () => {
     // @fixme complete this test
+    component.productForm.setValue({
+      name: 'Test Product',
+      description: 'This is a description',
+      department: 'Sales'
+    });
+    const resetFormSpy = jest.spyOn(component, 'resetForm');
+    component.onCancel();
+    expect(resetFormSpy).toHaveBeenCalled();
+    expect(component.productForm.value).toEqual({
+      name: '',
+      description: '',
+      department: ''
+    });
   });
 
   it('should populate form when product input changes', () => {

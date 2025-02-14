@@ -50,3 +50,32 @@ pnpm ng generate --help
 ```bash
 pnpm test
 ```
+
+
+# Junior Technical Assesment Solution Steps
+
+1. Refactor the product card out of the main app component into it's own (with tests)
+
+Removed the code for a product card from app.component.html.
+Created a new component product-card with the cli and made into a reusable component.
+Added tests in product-card.component.spec.ts for new the product-card component.
+Imported the product-card component into app.component.ts
+Added the new product-card component inside app.component.html
+
+2. Ensure errors during create/update of a product are shown to the user
+
+Added error messages to be displayed when create/update product fails
+Added a test to check if the error message is displayed when the crete/update fails
+
+3. Provide meaningful feedback to the user depending on the validation error
+
+Added meaningful feedback about errors within the form
+
+4. Ensure form data is not lost if errors occur
+
+Made sure data is not lost if there are errors in the form when create/update a product
+
+5. Complete the missing tests
+
+Added the missing tests in product-form.component.spec.ts
+

@@ -4,7 +4,7 @@ import { ProductFormComponent } from './product-form/product-form.component';
 import { ProductService } from './services/product.service';
 import { Product } from './models/product.model';
 import { Observable, of, throwError } from 'rxjs';
-
+import { By } from '@angular/platform-browser';
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
@@ -82,14 +82,14 @@ describe('AppComponent', () => {
       description: 'New Description',
       department: 'New Department'
     };
-
+  
     component.onSaveProduct(newProduct);
     tick(500);
-
+  
+    // Expect `createProduct` to be called since there's no selectedProduct
     expect(productService.createProduct).toHaveBeenCalledWith(newProduct);
     expect(productService.getProducts).toHaveBeenCalled();
   }));
-
   it('should update an existing product', fakeAsync(() => {
     const updateData = {
       name: 'Updated Product',
@@ -179,4 +179,15 @@ describe('AppComponent', () => {
     expect(consoleErrorSpy).toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
   }));
+  
+  it('should display an error message when product creation fails', () => {
+    const mockProductData = { name: 'Test Product', description: 'Test Desc', department: 'Test Dept' };
+    const productService = TestBed.inject(ProductService);
+    jest.spyOn(productService, 'createProduct').mockReturnValue(throwError(() => new Error('Server Error')));
+    component.onSaveProduct(mockProductData);
+    fixture.detectChanges();
+    const errorElement = fixture.debugElement.query(By.css('.text-red-700'));
+    expect(errorElement).toBeTruthy();
+    expect(errorElement.nativeElement.textContent).toContain('Error: Failed to create product. Please fix the errors and try again.');
+  });
 });

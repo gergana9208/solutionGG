@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Product } from '../models/product.model';
-
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-product-form',
   standalone: true,
@@ -16,8 +16,9 @@ export class ProductFormComponent implements OnChanges {
 
   productForm: FormGroup;
   isSubmitted = false;
+  errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private cdRef: ChangeDetectorRef) {
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
@@ -40,13 +41,16 @@ export class ProductFormComponent implements OnChanges {
   // @fixme do not reset the form if there are errors
   onSubmit(): void {
     this.isSubmitted = true;
-
+  
     if (this.productForm.valid) {
+      this.errorMessage = null;
       this.save.emit(this.productForm.value);
       this.resetForm();
+    } else {
+      this.errorMessage = 'Please fix the errors in the form and try again.';
+      this.cdRef.detectChanges();
     }
   }
-
   onCancel(): void {
     this.cancel.emit();
     this.resetForm();

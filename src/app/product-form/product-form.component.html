@@ -2,7 +2,9 @@
   <h2 class="text-xl font-semibold text-gray-900 mb-6">
     {{ product ? 'Edit Product' : 'Add New Product' }}
   </h2>
-
+  <div *ngIf="errorMessage" class="text-sm text-red-600 mb-4">
+    {{ errorMessage }}
+  </div>
   <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="space-y-6">
     <!-- Name Field -->
     <div>
@@ -15,15 +17,23 @@
         formControlName="name"
         placeholder="Enter product name"
         class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-      />
+        [ngClass]="{'border-red-500': shouldShowError('name')}"
+        />
+        
       @if (shouldShowError('name')) {
-        <p class="mt-1 text-sm text-red-600">
-          <!-- @fixme improve the user feedback -->
-          @if (productForm.get('name')?.errors) {
-            Product name is invalid
-          }
-        </p>
-      }
+      <p class="mt-1 text-sm text-red-600">
+        @if (productForm.get('name')?.errors?.['required']) {
+          Product name is required
+        }
+        @if (productForm.get('name')?.errors?.['minlength']) {
+          Product name must be at least 10 characters
+        }
+        @if (productForm.get('name')?.errors?.['maxlength']) {
+          Product name cannot exceed 30 characters
+        }
+      </p>
+}
+
     </div>
 
     <!-- Description Field -->
